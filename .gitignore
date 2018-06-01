@@ -9,4 +9,5 @@ target
 /.settings
 /RUNNING_PID
 
-assets/node_modules
+app/assets/node_modules
+public/assets

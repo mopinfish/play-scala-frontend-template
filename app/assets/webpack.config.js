@@ -1,4 +1,5 @@
 const UglifyJsPlugin = require('uglifyjs-webpack-plugin')
+		, MiniCssExtractPlugin = require("mini-css-extract-plugin")
     , path = require('path')
     ;
 
@@ -6,7 +7,7 @@ module.exports = {
 	module: {
 		rules: [
 			{
-				test: /\.(js|tsx?)$/,
+				test: /\.(tsx?)$/,
 				exclude: /node_modules/,
         use: [
           {
@@ -25,10 +26,10 @@ module.exports = {
 
 				use: [
 					{
-						loader: 'style-loader'
+						loader: MiniCssExtractPlugin.loader
 					},
 					{
-						loader: 'css-loader'
+						loader: 'css-loader?minimize&sourceMap!sass-loader'
 					},
 					{
 						loader: 'sass-loader'
@@ -38,10 +39,18 @@ module.exports = {
 		]
 	},
 
-	plugins: [new UglifyJsPlugin()],
-
+	plugins: [
+		new MiniCssExtractPlugin({
+			// Options similar to the same options in webpackOptions.output
+			// both options are optional
+			filename: "[name].css",
+			chunkFilename: "[id].css"
+		}),
+		new UglifyJsPlugin()
+	],
 	entry: {
-		app: './pc/ts/app.ts'
+		'css/reset': ['./read_css/reset_css.js'],
+		'js/app': ['./ts/common/app.ts']
 	},
 
   // 下記のエラーに対応するための設定
@@ -50,7 +59,7 @@ module.exports = {
 
 	output: {
 		filename: '[name].js',
-		path: path.resolve(__dirname, '../public/assets/pc')
+		path: path.resolve(__dirname, '../../public/assets')
 	},
 
 	mode: 'development'
